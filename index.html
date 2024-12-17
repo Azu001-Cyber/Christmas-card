@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Card</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        #main {
+            width: 80%;
+            max-width: 600px;
+            border: 2px solid #000;
+            border-radius: 15px;
+            background-color: #ffffff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            z-index: 1;
+        }
+        .image-container {
+            background-color: #e8f5e9;
+            text-align: center;
+            padding: 15px;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .text-container {
+            background-color: #efff3b;
+            padding: 20px;
+            text-align: center;
+        }
+        .text-container h1 {
+            color: #d32f2f;
+            font-size: 2.2em;
+            margin: 0 0 10px;
+        }
+        .text-container p {
+            font-size: 1.2em;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            color: black;
+            margin: 0;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            background-color: rgba(237, 239, 237, 0.1);
+        }
+        audio {
+            display: none; /* Hides the audio player */
+        }
+        button{
+            background-color: rgb(37, 224, 37);
+            width: 100%;
+        }
+       
+
+    </style>
+</head>
+<body>
+    <canvas id="snowfall"></canvas>
+    <div id="main">
+        <div class="image-container">
+            <img src="images/santa clause.jpg" alt="Santa Claus on a sleigh with snowfall in the background">
+        </div>
+        <div class="text-container">
+            <h1>Merry Christmas Eve</h1>
+            <p>Wishing you joy, love, and warmth this festive season!</p>
+        </div>
+        <button id="toggle-sound">🔊 Toggle Sound</button>
+    </div>
+    <audio id="background-music" autoplay loop>
+        <source src="sounds/jingle-bells-christmas-holidays-celebration-background-intro-theme-265841 (1).mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const canvas = document.getElementById("snowfall");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let snowflakes = [];
+
+        function createSnowflake() {
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 4 + 1,
+                speedY: Math.random() * 1 + 0.5,
+                speedX: Math.random() * 1 - 0.5,
+                opacity: Math.random()
+            };
+        }
+
+        function drawSnowflake(snowflake) {
+            ctx.beginPath();
+            ctx.arc(snowflake.x, snowflake.y, snowflake.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${snowflake.opacity})`;
+            ctx.fill();
+        }
+
+        function updateSnowflake(snowflake) {
+            snowflake.y += snowflake.speedY;
+            snowflake.x += snowflake.speedX;
+
+            if (snowflake.y > canvas.height) {
+                snowflake.y = -snowflake.radius;
+                snowflake.x = Math.random() * canvas.width;
+            }
+            if (snowflake.x > canvas.width) {
+                snowflake.x = -snowflake.radius;
+            }
+            if (snowflake.x < -snowflake.radius) {
+                snowflake.x = canvas.width + snowflake.radius;
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            snowflakes.forEach((snowflake, index) => {
+                drawSnowflake(snowflake);
+                updateSnowflake(snowflake);
+            });
+            requestAnimationFrame(animate);
+        }
+
+        function init() {
+            snowflakes = Array.from({ length: 100 }, createSnowflake);
+            animate();
+        }
+
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        const music = document.getElementById("background-music");
+const toggleSoundButton = document.getElementById("toggle-sound");
+
+toggleSoundButton.addEventListener("click", () => {
+    if (music.paused) {
+        music.play();
+        toggleSoundButton.textContent = "🔊 Turn Off Sound";
+    } else {
+        music.pause();
+        toggleSoundButton.textContent = "🔇 Turn On Sound";
+    }
+});
+
+
+        init();
+
+        function init() {
+    // Play sound when snowfall starts
+    const snowSound = new Audio("sounds/snowfall.mp3");
+    snowSound.loop = true;
+    snowSound.play();
+    // Start snowfall animation
+    snowflakes = Array.from({ length: 100 }, createSnowflake);
+    animate();
+}
+
+    </script>
+</body>
+</html>
